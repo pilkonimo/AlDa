@@ -1,0 +1,6 @@
+deepcopy and assert failes if trying to compare objects -- different memory addresses?
+class attributes in oop normally private - python seems to allow public access by default, implement otherwise?
+
+does every (index)comparison count?
+
+pep8?

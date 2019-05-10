@@ -1,0 +1,79 @@
+def create_plots(N_max=300):
+    data_ins = list()
+    data_merge = list()
+    data_quick = list()
+    time_ins = list()
+    time_merge = list()
+    time_quick = list()
+    timer_ins = timeit.Timer(stmt_ins)
+    timer_merge = timeit.Timer(stmt_merge)
+    timer_quick = timeit.Timer(stmt_quick)
+
+    # generate data
+    for N in range(2, N_max):
+        a_1 = [random.randint(1, 1000) for i in range(N)]
+        a_2 = a_1[:]
+        a_3 = a_1[:]
+
+        data_ins.append(insertionSort(a_1)[1])
+        data_merge.append(mergeSort(a_2)[1])
+        data_quick.append(quickSort(a_3)[1])
+
+        time_ins.append(timer_ins.timeit(N))
+        time_merge.append(timer_merge.timeit(N))
+        time_quick.append(timer_quick.timeit(N))
+
+    data_ins = np.array(data_ins)
+    data_merge = np.array(data_merge)
+    data_quick = np.array(data_quick)
+    data_x = np.linspace(2, N_max, N_max - 2)
+
+    popt_ins, pcov_ins = curve_fit(fit_ins, data_x, data_ins)
+    popt_merge, pcov_merge = curve_fit(fit_merge, data_x, data_merge)
+    popt_quick, pcov_quick= curve_fit(fit_quick, data_x, data_quick)
+
+    plt.scatter(data_x, data_ins, c='blue')
+    plt.plot(data_x, fit_ins(data_x, *popt_ins), c='red', label='insertion: a*N**2+b*N+c \n a, b, c=' + str(popt_ins))
+    plt.xlabel('length of array')
+    plt.ylabel('number of comparisons')
+    plt.legend(loc='best')
+    plt.savefig('figures/insertion.png', format='PNG')
+
+    plt.clf()
+    plt.scatter(data_x, data_merge, c='blue')
+    plt.plot(data_x, fit_merge(data_x, *popt_merge), c='red',
+             label='merge: a*N*np.log(N)+b*N+c \n a, b, c=' + str(popt_merge))
+    plt.xlabel('length of array')
+    plt.ylabel('number of comparisons')
+    plt.legend(loc='best')
+    plt.savefig('figures/merge.png', format='PNG')
+
+    plt.clf()
+    plt.scatter(data_x, data_quick, c='blue')
+    plt.plot(data_x, fit_merge(data_x, *popt_quick), c='red',
+             label='quick: a*N*np.log(N)+b*N+c \n a, b, c=' + str(popt_quick))
+    plt.xlabel('length of array')
+    plt.ylabel('number of comparisons')
+    plt.legend(loc='best')
+    plt.savefig('figures/quick.png', format='PNG')
+
+    plt.clf()
+    plt.ylim(9 * 10 ** -7, 3*10 ** -5)
+    plt.scatter(data_x, time_ins, c='blue')
+    plt.xlabel('length of array')
+    plt.ylabel('executiontime (insertionsort)')
+    plt.savefig('figures/insertion_time.png', format='PNG')
+
+    plt.clf()
+    plt.ylim(9 * 10 ** -7, 10 ** -4)
+    plt.scatter(data_x, time_merge, c='blue')
+    plt.xlabel('length of array')
+    plt.ylabel('executiontime (mergesort)')
+    plt.savefig('figures/merge_time.png', format='PNG')
+
+    plt.clf()
+    plt.ylim(9*10**-7, 10**-4)
+    plt.scatter(data_x, time_quick, c='blue')
+    plt.xlabel('length of array')
+    plt.ylabel('executiontime (quicksort)')
+    plt.savefig('figures/quick_time.png', format='PNG')
