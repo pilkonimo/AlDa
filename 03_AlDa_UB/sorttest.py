@@ -100,30 +100,64 @@ class TestSortingFunctions(unittest.TestCase):
     def testBuiltinSort(self):
         # test the integer arrays
         for a in self.int_arrays:
-            ... # your code here (test that array is sorted)
+            b=copy.deepcopy(a)  
+            a.sort()
+            self.assertTrue(self.checkIntegerSorting(b,a)) 
 
         # test the Student arrays
         for a in self.student_arrays:
-            ... # your code here (test that array is sorted and stable)
+            b=copy.deepcopy(a)  
+            a.sort(key=Student.getMark)
+            self.assertTrue(self.checkStudentSorting(b,a))  
 
     def testInsertionSort(self):
         # test the integer arrays
         for a in self.int_arrays:
-            ... # your code here (test that array is sorted)
+            b=copy.deepcopy(a)  
+            insertionSort(a)
+            self.assertTrue(self.checkIntegerSorting(b,a))   
 
         # test the Student arrays
         for a in self.student_arrays:
-            ... # your code here (test that array is sorted and stable)
+            b=copy.deepcopy(a)  
+            insertionSort(a,key=Student.getMark)
+            self.assertTrue(self.checkStudentSorting(b,a)) 
 
     def checkIntegerSorting(self, original, result):
         '''Parameter 'original' contains the array before sorting,
         parameter 'result' contains the result of the sorting algorithm.'''
-        ... # your code here
+        if len(result)==0: #check for empty arrays
+            if len(original)==0:
+                return True
+            else: 
+                return False
+        self.assertEqual(len(original),len(result)) #assert equal length
+        i=0
+        while len(original)>0: #assert equal elements
+            mini=min(original)
+            if result[i]==mini:
+                i+=1
+                original.remove(mini)
+            else:
+                return False
+        i=0
+        while i < len(result)-1: #assert sorting
+            if result[i]<=result[i+1]:
+                i+=1
+            else:
+                return False
+        return True
 
     def checkStudentSorting(self, original, result):
         '''Parameter 'original' contains the array before sorting,
         parameter 'result' contains the result of the sorting algorithm.'''
-        ... # your code here
+        if len(result)==0:
+            if len(original)==0:
+                return True
+            else: 
+                return False
+        return True #filler, code has yet to be implemented
+        
 
 ##################################################################
 
