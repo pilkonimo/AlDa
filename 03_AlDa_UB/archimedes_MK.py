@@ -1,11 +1,11 @@
-from math import sqrt
+from math import sqrt, trunc
 
 
 def archimedes1(k, output=True):
     """Implementation of archimedes algorithm to calculate pi using subtraction."""
     # startvalues for square formatted as (n, inner_side_length, outer_side_length)
     sides = [(4, sqrt(2), 2)]
-    for i in range(k-1):
+    for i in range(k):
         n, s_n, t_n = sides[-1]
         sides.append((2*n, sqrt(2-sqrt(4-s_n**2)), 2*(sqrt(4+t_n**2)-2)/t_n))
         if output:
@@ -15,14 +15,14 @@ def archimedes1(k, output=True):
     return sides
 
 
-# archimedes1(50)
+# archimedes1(20)
 
 
 def archimedes2(k, output=True):
     """Implementation of archimedes algorithm to calculate pi using addition."""
     # startvalues for square formatted as (n, inner_side_length, outer_side_length)
     sides = [(4, sqrt(2), 2)]
-    for i in range(k - 1):
+    for i in range(k):
         n, s_n, t_n = sides[-1]
         sides.append((2 * n, s_n/sqrt(2+sqrt(4-s_n**2)), 2*t_n/(sqrt(4 + t_n ** 2)+2)))
         if output:
@@ -35,16 +35,38 @@ def archimedes2(k, output=True):
 # archimedes2(100)
 
 
+def truncate(number, digits) -> float:
+    stepper = pow(10.0, digits)
+    return trunc(stepper * number) / stepper
 
-def archimedes_test(k=100):
-    """Test for archimedes functions, default duplication 100."""
-    for i in range(2, 100):
-        sides_1, sides_2 = archimedes1(i, False), archimedes2(i, False)
-        n_1, s_n_1, t_n_1 = sides_1[-1]
-        n_2, s_n_2, t_n_2 = sides_2[-1]
-        t_n_test = 2 * s_n_2 / sqrt(4 - s_n_2 ** 2)
-        assert t_n_2 == t_n_test, 'archimedes2, n = ' + str(n_2)
-        assert t_n_1 == t_n_test, 'archimedes1, n = ' + str(n_1)
+
+def archimedes_test1(k=20, digits=10):
+    """Test for archimedes functions, default amount of duplications 20."""
+    sides = archimedes1(k, False)
+    for i in range(2, k):
+        n, s_n, t_n = sides[i]
+        t_n_test = 2 * s_n / sqrt(4 - s_n**2)
+        # truncate to 8 decimal places
+        t_n = truncate(t_n, digits)
+        t_n_test = truncate(t_n_test, digits)
+        assert t_n == t_n_test, 'archimedes1, n = ' + str(n)
+
+
+def archimedes_test2(k=20, digits = 10):
+    """Test for archimedes functions, default amount of duplications 20."""
+    sides = archimedes2(k, False)
+    for i in range(1, k):
+        n, s_n, t_n = sides[i]
+        t_n_test = 2 * s_n / sqrt(4 - s_n**2)
+        # truncate to 8 decimal places
+        t_n = truncate(t_n, digits)
+        t_n_test = truncate(t_n_test, digits)
+        assert t_n == t_n_test, 'archimedes2, n = ' + str(n)
+
+
+def archimedes_test(d=10):
+    archimedes_test2(digits=d)
+    archimedes_test1(digits=d)
 
 
 archimedes_test()
