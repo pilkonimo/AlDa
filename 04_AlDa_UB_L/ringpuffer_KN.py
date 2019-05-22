@@ -87,6 +87,7 @@ class UniversalContainer3(UniversalContainer):
         self.in_ = 0
         self.out_ = -1
 
+    #performs the calculation of the real ringpufferindex
     def getindex_(self, index):
         index += self.in_
         if index <= (self.capacity() - 1):
@@ -95,6 +96,7 @@ class UniversalContainer3(UniversalContainer):
             if self.in_ > 0:
                 return index - self.capacity() + 1
             else:
+                #should not be necessary, just a check
                 raise RuntimeError("Overflow!")
 
     def push(self, item): # add item at the end
@@ -102,20 +104,23 @@ class UniversalContainer3(UniversalContainer):
             self.capacity_ *= 2
             self.data_ += [None]*self.size_
 
+            #Copy Data to the beginning
             if self.out_ < self.in_:
                 self.data_[0:self.size_-1] = self.data_[self.in_:self.capacity_] + self.data_[0:self.out_]
             else:
                 self.data_[0:self.size_-1] = self.data_[self.in_:self.out_]
 
+            #Alternativ way of copying (slower)
             '''if self.out_ < self.in_:
                 for i in range(self.out_):
                     self.data_[self.size_ - self.in_ + i] = self.data_[i] #append ring items to the end
             for i in range(self.size_):
                 self.data_[i] = self.data_[self.in_ + i]  # Shift data to beginning of array'''
+
             self.in_ = 0
             self.out_ = self.size_ - 1
 
-
+        #if end pointer reaches end of data_ it must be changed to pos 0 if there is space left
         if self.out_ >= 0 and self.out_ < self.capacity_ - 1:
             self.out_ += 1
         elif self.out_ == self.capacity_ - 1:
@@ -167,10 +172,6 @@ class UniversalContainer3(UniversalContainer):
     def last(self):
         return self.data_[self.out_]
 
-
-
-
-
 def containersEqual(left, right):
     if left.size() != right.size():
         return False
@@ -179,7 +180,6 @@ def containersEqual(left, right):
             return False
     return True
 
-#TODO: Sinnvolle Kommentare
 def testContainer(c):
     # Axiom 1
     #c = UniversalContainer()
@@ -259,6 +259,7 @@ def testContainer(c):
 
     cap_old = c.capacity()
     size_old = c.size()
+
     # Ringpuffertest
     for i in range( 2 * c.size()):
         c.popFirst()
@@ -283,6 +284,8 @@ def testIt():
     testContainer(e)
 
 def timeIt():
+    '''Method performs different timeit test for push() and PopFirst()'''
+
     initialisation1 = '''c = UniversalContainer1()'''
     initialisation2 = '''c = UniversalContainer2()'''
     initialisation3 = '''c = UniversalContainer3()'''
@@ -332,6 +335,7 @@ for i in range(1000):
         c.pop(0)
     '''
 
+    #N part did not work even with using globals=globals() in timeit
     repeats = 100
     N = 400
 
@@ -361,7 +365,7 @@ execution time push c2:       4.39632300000003 ms
 execution time push c3:      10.96485299999994 ms
 execution time append c4:     0.85217400000026 ms
 
-(N=100)
+(N=100, but array length 100000)
 execution time popFirst c1: 168.08084199999973 ms 
 execution time popFirst c2: 170.51836399999942 ms
 execution time popFirst c3:   0.07445099999614 ms
@@ -371,5 +375,5 @@ execution time pop(0) c4:     0.23437699999817 ms
 
 # make universal-container.py executable
 if __name__ == "__main__":
-    testIt()
-    timeIt()
+    testIt() #perfom tests
+    timeIt() #compare execution times
