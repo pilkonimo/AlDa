@@ -12,6 +12,29 @@ class Operator:
         self.right = r
 
 
+def check_infix(infix):
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    operators = ['+', '-', ':', '*']
+    paranth_counter = 0
+    # first element needs to be a number
+    if not infix[0] in numbers:
+        return False
+    for i in range(1, len(infix) - 1):
+        if infix[i] in numbers and (infix[i+1] not in operators and infix[i+1] != ')'):
+            return False
+        if infix[i] in operators and (infix[i+1] not in numbers and infix[i+1] != '('):
+            return False
+        if infix[i] == '(':
+            paranth_counter += 1
+        if infix[i] == ')':
+            paranth_counter -= 1
+            if paranth_counter < 0:
+                return False
+    # last element needs to be number and number of open and closed parentheses needs to be equal
+    if infix[len(infix)-1] not in numbers or paranth_counter != 0:
+        return False
+    return True
+
 def convert_to_postfix(infix):
     stack = []
     postfix = ''
@@ -40,6 +63,8 @@ def convert_to_postfix(infix):
 
 def parse(s):
     stack = []
+    if not check_infix(s):
+        raise SyntaxError('infix expression is incorrect!')
     postfix = convert_to_postfix(s)
 
     for c in postfix:
@@ -69,3 +94,4 @@ def evaluate(root):
     operand_l = evaluate(root.left)
     operand_r = evaluate(root.right)
     return operation(operand_l, root.operator, operand_r)
+
