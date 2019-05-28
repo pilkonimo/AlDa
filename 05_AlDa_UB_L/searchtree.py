@@ -4,12 +4,15 @@ import copy
 
 
 class Node:
+    '''Node Klasse, die Struktur eines Knotens mit Parent-Child Verknüpfung realisiert'''
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.left = self.right = None
 
 class SearchTree:
+    '''Implementierung eines sortierten Binärnbaumes unbalanciert'''
+
     def __init__(self):
         self.root = None
         self.size = 0
@@ -18,13 +21,13 @@ class SearchTree:
         return self.size
 
     def treeInsert_(self, node, key, value):
+        ''''Rekursionsfunktion für insert() Operation'''
         if node is None:
             self.size += 1
             return Node(key, value)
 
         if node.key == key:
             node.value = value
-            #return node
         elif key < node.key:
             node.left = self.treeInsert_(node.left, key, value)
         else:
@@ -33,6 +36,7 @@ class SearchTree:
         return node
 
     def searchTree_(self, node, key):
+        ''''Rekursionsfunktion für find() Operation'''
         if node is None:
             return None
         elif node.key == key:
@@ -42,14 +46,16 @@ class SearchTree:
         else:
             return self.searchTree_(node.right, key)
 
+
     def treePredecessorleft(self, node):
-        '''Finde '''
+        '''Finde Vorgänger'''
         node = node.left
         while node.right is not None:
             node = node.right
         return node
 
     def treeRemove_(self, node, key):
+        ''''Rekursionsfunktion für remove() Operation'''
         if node is None:
             return node
         if key < node.key:
@@ -70,6 +76,8 @@ class SearchTree:
 
         return node
 
+
+    #Aufrufer der kanonischen Operationen
     def insert(self, key, value):
         self.root = self.treeInsert_(self.root, key, value)
 
@@ -80,6 +88,7 @@ class SearchTree:
     def find(self, key):
         return self.searchTree_(self.root, key)
 
+    #Implementierung der depth Funktion mittels preOrder Durchlauf und zählen der maximalen Rekursionstiefe
     def depth(self):
         return self.preOrderDepth_(self.root, 0)
 
@@ -97,6 +106,7 @@ class SearchTree:
 
 
 class TestSearchTree(unittest.TestCase):
+    '''Unittest testclass für Binärbaum'''
 
     def setUp(self):
         self.randDataTree = SearchTree() #Testbaum
@@ -126,18 +136,21 @@ class TestSearchTree(unittest.TestCase):
 
 
     def testSize(self):
-        '''Testcase'''
+        '''Testcase Size mit random tree'''
         self.assertTrue(self.size is self.randDataTree.size, 'Size not equal')
 
     def testDepth(self):
+        '''Testcase Depth mit custom tree'''
         self.assertTrue(self.cusDataTree.depth() is 4, 'Err in depth()')
 
     def testFind(self):
+        '''Testcase Find mit random tree'''
         for key in self.randkey_list:
             self.assertTrue(self.randDataTree.find(key) is not None, 'Set key could not be found, error in tree.find()')
         self.assertTrue(self.randDataTree.find(randint(0, 99)) is None, 'Not existing key was found, error in tree.find()')
 
     def testOverwrite(self):
+        '''Testcase doppelter key mit random tree'''
         key = self.randkey_list[int(self.size / 2)]
         old = self.randDataTree.find(key).value
         self.randDataTree.insert(key, old+1)
@@ -145,6 +158,7 @@ class TestSearchTree(unittest.TestCase):
         self.assertTrue(self.randDataTree.find(key).value is old + 1, 'overwrite of existing key did not work')
 
     def testRemove(self):
+        '''Testcase Remove mit random tree'''
         for key in self.randkey_list_sorted: # sorted, weil so nicht der reihenfolge nach im Baum gelöscht wird, sondern 'zufällig'
             size = self.randDataTree.size
             self.randDataTree.remove(key)
@@ -152,18 +166,6 @@ class TestSearchTree(unittest.TestCase):
             self.assertTrue(self.randDataTree.size is size - 1, 'Err in remove(), size not correct')
 
         self.assertTrue(self.randDataTree.root is None, 'Deleting everything did not result in empty Tree')
-
-
-
-dataTree = SearchTree()
-
-dataTree.insert(1, 'eins')
-dataTree.insert(2, 'zwei')
-dataTree.insert(3, 'drei')
-dataTree.insert(4, 'vier')
-dataTree.insert(1.5, 'eineinhalb')
-dataTree.remove(4)
-print(dataTree.depth())
 
 
 
