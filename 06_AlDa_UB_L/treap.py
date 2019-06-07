@@ -5,7 +5,7 @@ from random import random
 class Node:
     def __init__(self, key, value, priority):
         self.key = key
-        self.value = value
+        self.value = value #habe value nicht entfernt, wäre mehr Aufwand gewesen, die Funktion zu entfernen, als sie zu behalten
         self.priority = priority
         self.left = self.right = None
 
@@ -336,8 +336,9 @@ class TreeTests(unittest.TestCase):
         self.assertEqual(0, DynamicTreap().depth())
 
 
-"""
+
 #zum selbst gucken
+"""
 def  buildTree_native(keyValue):
         t = DynamicTreap()
         t.insert(0,0)
@@ -358,8 +359,8 @@ t.remove(4)
 t.show(t.root)
 """
 
-#Aufgabe c)
-
+#Aufgabe c) (liest nur ein)
+"""
 import sys, os #um den richtigen pfad zu bekommen
 filename =  os.path.join(sys.path[0], 'die-drei-musketiere.txt')
 s = open(filename, encoding="latin-1").read()
@@ -373,9 +374,10 @@ dt = DynamicTreap()
 for word in text:
     rt.insert(word,0)
     dt.insert(word,0)
+"""
 
-
-""" #rt und dt anzeigen lassen
+#rt und dt anzeigen lassen
+"""
 rt.show(rt.root)
 print("------------------------------------------------")
 dt.show(dt.root)
