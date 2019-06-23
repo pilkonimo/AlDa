@@ -1,0 +1,2 @@
+Leider war es aufgrund des Feiertages nicht mehr möglich die schriftlichen Lösungen vor Ende der Abgabefrist im Zettelkasten abzugeben. 
+Sie befinden sich in der Datei '08_UB_schriftliche_Abgabe_Kahl_Kinz_Neureither.pdf'.
